@@ -4,17 +4,17 @@ from rest_framework import serializers
 class GenreSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Genre
-        fields = ['name']
+        fields = ['name', 'image']
 
 class ClassificationSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Classification
-        fields = ['text']
+        fields = ['text', 'image']
 
 class ProviderSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Provider
-        fields = ['name', 'url']
+        fields = ['name', 'url', 'image']
 
 class MovieSerializer(serializers.HyperlinkedModelSerializer):
     provider = ProviderSerializer (many=True)
@@ -23,5 +23,5 @@ class MovieSerializer(serializers.HyperlinkedModelSerializer):
     
     class Meta:
         model = Movie
-        fields = ['title', 'summary', 'duration', 'release_date', 'provider', 'genre', 'classification']
+        fields = ['title', 'summary', 'duration', 'release_date', 'image', 'provider', 'genre', 'classification']
 
