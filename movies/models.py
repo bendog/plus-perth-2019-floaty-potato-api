@@ -1,4 +1,6 @@
 from django.db import models
+from django.contrib.auth import get_user_model
+
 
 class Classification(models.Model):
     text = models.CharField(max_length=10, null=False)
@@ -37,3 +39,17 @@ class Movie(models.Model):
 
     def __str__ (self):
         return self.title
+
+User = get_user_model()
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    date_of_birth = models.DateField(max_length=8, null=True)
+    avatar = models.ImageField(upload_to = 'avatar/', default = 'popcorn.jpg')
+    preferred_genres = models.ManyToManyField(Genre)
+    preferred_providers = models.ManyToManyField(Provider)
+    watchlist = models.ManyToManyField(Movie)
+
+
+    def __str__(self):
+        return self.name

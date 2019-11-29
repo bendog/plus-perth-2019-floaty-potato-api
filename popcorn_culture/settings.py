@@ -40,7 +40,6 @@ INSTALLED_APPS = [
     'rest_framework',
     'movies',
     'django_filters',
-    'users',
     'corsheaders',
 ]
 

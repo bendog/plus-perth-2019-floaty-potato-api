@@ -1,5 +1,6 @@
-from .models import Movie, Classification, Genre, Provider
+from .models import Movie, Classification, Genre, Provider, Profile
 from rest_framework import serializers
+from django.contrib.auth.models import User
 
 class GenreSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
@@ -25,3 +26,13 @@ class MovieSerializer(serializers.HyperlinkedModelSerializer):
         model = Movie
         fields = ['title', 'summary', 'duration', 'release_date', 'image', 'provider', 'genre', 'classification']
 
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profile
+        fields = "__all__"
+
+class UserSerializer(serializers.ModelSerializer):
+    profile = ProfileSerializer(many=False, required=False)
+    class Meta:
+        model = User
+        fields = ['id', 'url', 'username', 'email', 'first_name', 'last_name','profile']
