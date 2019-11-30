@@ -35,4 +35,21 @@ class UserSerializer(serializers.ModelSerializer):
     profile = ProfileSerializer(many=False, required=False)
     class Meta:
         model = User
-        fields = ['id', 'url', 'username', 'email', 'first_name', 'last_name','profile']
+        fields = ['id', 'url', 'username', 'email', 'password', 'first_name', 'last_name', 'profile']
+
+    def create(self, validated_data):
+        User
+        validated_data['is_active'] = False
+        # validated_data['password'] = self.context.get('request').password
+        # print('data:', validated_data )
+        user = User(**validated_data)
+        user.save()
+        user.set_password(validated_data.get('password'))
+        return user
+
+class PasswordSerializer(serializers.Serializer):
+    """
+    Serializer for password change endpoint.
+    """
+
+    new_password = serializers.CharField(required=True)

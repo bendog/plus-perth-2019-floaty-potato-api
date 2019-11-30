@@ -4,11 +4,15 @@ from rest_framework import viewsets, filters, generics
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.renderers import JSONRenderer
+from rest_framework import mixins
+from rest_framework.decorators import action
 from django.contrib.auth.models import User
 import django_filters.rest_framework
 from .models import Movie, Classification, Provider, Genre
 from .serializers import MovieSerializer, GenreSerializer, ProviderSerializer, ClassificationSerializer, UserSerializer, ProfileSerializer
 from .models import Profile
+from .permissions import IsAdminOrSelf
+
 
 
 class MovieViewSet(viewsets.ModelViewSet):
@@ -39,6 +43,13 @@ class ProviderViewSet(viewsets.ModelViewSet):
     search_fields = ["name"]
     renderer_classes = [JSONRenderer]
 
+class RegisterViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
+    """
+    API endpoint that allows users to created.
+    """
+    queryset = User.objects.all().order_by('-date_joined')
+    serializer_class = UserSerializer
+
 class UserViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows users to be viewed or edited.
@@ -47,6 +58,37 @@ class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
     permission_classes = (IsAuthenticated,)
 
+    def get_queryset(self):
+        # if the user is admin, return all the users
+        if self.request.user.is_superuser:
+            return User.objects.all().order_by("-date_joined")
+        # if the user is logged in, return only the active user
+        if self.request.user:
+            return User.objects.filter(pk=self.request.user.pk)
+        # if there is no user, return no results
+        return User.objects.none()
+
+    @action(methods=["post"], detail=True, permission_classes=[IsAdminOrSelf])
+    def set_password(self, request, pk=None):
+        """ set the user password """
+        serializer = PasswordSerializer(data=request.data)
+        user = self.get_object()
+
+        if serializer.is_valid():
+            user.set_password(serializer.data.get("new_password"))
+            user.save()
+            return Response({"status": "password set"}, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(methods=["get"], detail=True, permission_classes=[IsAdminOrSelf])
+    def reset_password(self, request, pk=None):
+        """ set the user password """
+        user = self.get_object()
+        send_password_reset_email(user)
+
+        return Response({"status": "password reset"}, status=status.HTTP_200_OK)
+
 class ProfileViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows users to be viewed or edited.
@@ -54,3 +96,4 @@ class ProfileViewSet(viewsets.ModelViewSet):
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
     permission_classes = (IsAuthenticated,)
+

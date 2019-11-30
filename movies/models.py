@@ -48,4 +48,4 @@ class Profile(models.Model):
     watchlist = models.ManyToManyField(Movie)
 
     def __str__(self):
-        return self.name
+        return self.user.first_name

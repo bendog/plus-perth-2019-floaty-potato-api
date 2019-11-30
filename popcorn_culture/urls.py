@@ -12,6 +12,7 @@ router.register(r'genres', GenreViewSet)
 router.register(r'providers', ProviderViewSet)
 router.register(r'classifications', ClassificationViewSet)
 router.register(r'users', UserViewSet)
+router.register(r'register', RegisterViewSet)
 router.register(r'profiles', ProfileViewSet)
 
 urlpatterns = [
