@@ -6,14 +6,12 @@ class Classification(models.Model):
     text = models.CharField(max_length=10, null=False)
     image = models.ImageField(upload_to = 'classifications/', default = 'no-img.png')
 
-
     def __str__ (self):
         return self.text
 
 class Genre(models.Model):
     name = models.CharField(max_length=50, null=False)
     image = models.ImageField(upload_to = 'genres/', default = 'no-img.png')
-
 
     def __str__ (self):
         return self.name
@@ -22,7 +20,6 @@ class Provider(models.Model):
     name = models.CharField(max_length=50, null=False)
     url = models.URLField(blank=True)
     image = models.ImageField(upload_to = 'providers/', default = 'no-img.png')
-
 
     def __str__ (self):
         return self.name
@@ -49,7 +46,6 @@ class Profile(models.Model):
     preferred_genres = models.ManyToManyField(Genre)
     preferred_providers = models.ManyToManyField(Provider)
     watchlist = models.ManyToManyField(Movie)
-
 
     def __str__(self):
         return self.name

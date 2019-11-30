@@ -11,7 +11,6 @@ from .serializers import MovieSerializer, GenreSerializer, ProviderSerializer, C
 from .models import Profile
 
 
-
 class MovieViewSet(viewsets.ModelViewSet):
     queryset = Movie.objects.all()
     serializer_class = MovieSerializer
@@ -22,14 +21,23 @@ class MovieViewSet(viewsets.ModelViewSet):
 class GenreViewSet(viewsets.ModelViewSet):
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ["name"]
+    renderer_classes = [JSONRenderer]
 
 class ClassificationViewSet(viewsets.ModelViewSet):
     queryset = Classification.objects.all()
     serializer_class = ClassificationSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ["text"]
+    renderer_classes = [JSONRenderer]
 
 class ProviderViewSet(viewsets.ModelViewSet):
     queryset = Provider.objects.all()
     serializer_class = ProviderSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ["name"]
+    renderer_classes = [JSONRenderer]
 
 class UserViewSet(viewsets.ModelViewSet):
     """
