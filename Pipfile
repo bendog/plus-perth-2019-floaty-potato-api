@@ -12,6 +12,8 @@ djangorestframework = "==3.10.3"
 pytz = "==2019.3"
 sqlparse = "==0.3.0"
 Django = "==2.2.7"
+waitress = "*"
+djangorestframework-simplejwt = "*"
 
 [requires]
 python_version = "3.7"
