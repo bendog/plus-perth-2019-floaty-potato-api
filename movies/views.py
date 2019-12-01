@@ -1,18 +1,17 @@
 from django.shortcuts import render
 from rest_framework.views import APIView
-from rest_framework import viewsets, filters, generics
+from rest_framework import viewsets, filters, generics, permissions
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.renderers import JSONRenderer
 from rest_framework import mixins
 from rest_framework.decorators import action
 from django.contrib.auth.models import User
+from rest_framework.authtoken.models import Token
 import django_filters.rest_framework
-from .models import Movie, Classification, Provider, Genre
-from .serializers import MovieSerializer, GenreSerializer, ProviderSerializer, ClassificationSerializer, UserSerializer, ProfileSerializer
-from .models import Profile
+from .models import Movie, Classification, Genre, Provider, Profile
+from .serializers import MovieSerializer, ProfileSerializer, UserSerializer, ProviderSerializer, ClassificationSerializer, GenreSerializer
 from .permissions import IsAdminOrSelf
-
 
 
 class MovieViewSet(viewsets.ModelViewSet):
@@ -54,9 +53,9 @@ class UserViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows users to be viewed or edited.
     """
-    queryset = User.objects.all().order_by('-date_joined')
+    queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = (IsAuthenticated,)
+    # permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
         # if the user is admin, return all the users
@@ -77,7 +76,7 @@ class UserViewSet(viewsets.ModelViewSet):
         if serializer.is_valid():
             user.set_password(serializer.data.get("new_password"))
             user.save()
-            return Response({"status": "password set"}, status=status.HTTP_200_OK)
+            return Response({"status": "password set"})
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -91,7 +90,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
 class ProfileViewSet(viewsets.ModelViewSet):
     """
-    API endpoint that allows users to be viewed or edited.
+    API endpoint that allows profiles to be viewed or edited.
     """
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
