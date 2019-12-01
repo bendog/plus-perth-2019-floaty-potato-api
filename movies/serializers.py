@@ -42,6 +42,7 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
     def create(self, validated_data):
         profile_data = validated_data.pop('profile')
         password = validated_data.pop('password')
+        validated_data['is_active'] = False
         user = User(**validated_data)
         user.set_password(password)
         user.save()
